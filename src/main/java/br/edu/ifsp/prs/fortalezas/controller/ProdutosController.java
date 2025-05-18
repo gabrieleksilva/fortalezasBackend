@@ -22,9 +22,8 @@ public class ProdutosController {
     @Autowired
     private ProdutosRepository produtosRepository;
 
-    @PostMapping("/produtos")
+    @PostMapping("produtos")
     @Transactional
-    @CrossOrigin(origins = "http://localhost:4200/cadastroProduto")
     public ResponseEntity<Map<String, String>> cadastrarProduto(
             @RequestPart("produto") CadastrarProdutosDTO produtoDTO,
             @RequestPart("imagem") MultipartFile imagem) {
