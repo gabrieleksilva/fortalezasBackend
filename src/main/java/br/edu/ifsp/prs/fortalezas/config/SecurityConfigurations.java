@@ -35,6 +35,9 @@ public class SecurityConfigurations {
                         .requestMatchers("/image/loucas/**").permitAll()
                         .requestMatchers("/image/torneiras/**").permitAll()
                         .requestMatchers("loja/quiz**").permitAll()
+                        .requestMatchers("/api/carrinho/iniciar**").permitAll()
+                        .requestMatchers("/api/carrinho**").permitAll()
+                        .requestMatchers("/api/carrinho/adicionar**").permitAll()
 
                         .anyRequest().authenticated()
                 )
