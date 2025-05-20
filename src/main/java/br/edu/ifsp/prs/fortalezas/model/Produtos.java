@@ -1,6 +1,7 @@
 package br.edu.ifsp.prs.fortalezas.model;
 
 import br.edu.ifsp.prs.fortalezas.dto.produtos.CadastrarProdutosDTO;
+import br.edu.ifsp.prs.fortalezas.dto.produtos.EditarProdutosDTO;
 import br.edu.ifsp.prs.fortalezas.enums.TipoProduto;
 import jakarta.persistence.*;
 import lombok.*;
@@ -40,5 +41,17 @@ public class Produtos {
         this.vlrUnit = cadastrarProdutosDTO.vlrUnit();
         this.tipo = cadastrarProdutosDTO.tipoProduto();
 
+    }
+
+    public void atualizarInformacoes(EditarProdutosDTO editarProdutosDTO) {
+        this.nome = editarProdutosDTO.nome();
+        this.marca = editarProdutosDTO.marca();
+        this.estiloDecoracao = editarProdutosDTO.estiloDecoracao();
+        this.corAmbiente = editarProdutosDTO.corAmbiente();
+        this.localInstalacao = editarProdutosDTO.localInstalacao();
+        this.descQuantidade = editarProdutosDTO.descQuantidade();
+        this.prioridade = editarProdutosDTO.prioridade();
+        this.vlrUnit = editarProdutosDTO.vlrUnit();
+        this.tipo = editarProdutosDTO.tipo();
     }
 }

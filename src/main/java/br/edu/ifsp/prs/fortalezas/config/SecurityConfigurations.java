@@ -27,7 +27,15 @@ public class SecurityConfigurations {
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/loja/login", "/usuarios").permitAll()
-                        .requestMatchers("/loja/produtos/**").permitAll()  // <- liberando aqui
+                        .requestMatchers("/loja/produtos/**").permitAll()
+                        .requestMatchers("/image/pisos/**").permitAll()
+                        .requestMatchers("/image/argamassas/**").permitAll()
+                        .requestMatchers("/image/gabinetes/**").permitAll()
+                        .requestMatchers("/image/iluminacao/**").permitAll()
+                        .requestMatchers("/image/loucas/**").permitAll()
+                        .requestMatchers("/image/torneiras/**").permitAll()
+                        .requestMatchers("loja/quiz**").permitAll()
+
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);

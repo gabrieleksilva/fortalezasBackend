@@ -3,7 +3,7 @@ package br.edu.ifsp.prs.fortalezas.dto.produtos;
 import br.edu.ifsp.prs.fortalezas.enums.TipoProduto;
 
 
-public record CadastrarProdutosDTO(
+public record EditarProdutosDTO(
                                    String nome,
                                    String marca,
                                    String estiloDecoracao,
@@ -12,6 +12,6 @@ public record CadastrarProdutosDTO(
                                    String prioridade,
                                    String descQuantidade,
                                    float vlrUnit,
-                                    TipoProduto tipoProduto
+                                    TipoProduto tipo
 ) {
 }
