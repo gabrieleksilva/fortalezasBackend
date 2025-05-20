@@ -26,8 +26,9 @@ public class SecurityConfigurations {
         http.csrf(csrf -> csrf.disable())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/loja/login", "/usuarios").permitAll()
+                        .requestMatchers("/loja/login", "/loja/usuarios").permitAll()
                         .requestMatchers("/loja/produtos/**").permitAll()
+                        .requestMatchers("/loja/contato**").permitAll()
                         .requestMatchers("/image/pisos/**").permitAll()
                         .requestMatchers("/image/argamassas/**").permitAll()
                         .requestMatchers("/image/gabinetes/**").permitAll()
