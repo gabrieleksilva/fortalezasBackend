@@ -13,6 +13,8 @@ import java.util.List;
 public interface ProdutosRepository extends JpaRepository<Produtos, Long> {
     Page<Produtos> findByTipo(TipoProduto tipoProduto, Pageable pageable);
 
+    Page<Produtos> findByNomeContainingIgnoreCaseOrMarcaContainingIgnoreCase(String nome, String marca, Pageable pageable);
+
     @Query("""
         SELECT p FROM produtos p
         WHERE (:estilo IS NULL OR p.estiloDecoracao = :estilo)
@@ -26,4 +28,5 @@ public interface ProdutosRepository extends JpaRepository<Produtos, Long> {
             @Param("local") String local,
             @Param("prioridade") String prioridade
     );
+
 }

@@ -28,7 +28,9 @@ public class SecurityConfigurations {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/loja/login", "/loja/usuarios").permitAll()
                         .requestMatchers("/loja/produtos/**").permitAll()
-                        .requestMatchers("/loja/contato**").permitAll()
+                        .requestMatchers("/loja/produtos/tipo**").permitAll()
+                        .requestMatchers("/loja/produtos/search**").permitAll()
+                        .requestMatchers("/loja/contatopo**").permitAll()
                         .requestMatchers("/image/pisos/**").permitAll()
                         .requestMatchers("/image/argamassas/**").permitAll()
                         .requestMatchers("/image/gabinetes/**").permitAll()

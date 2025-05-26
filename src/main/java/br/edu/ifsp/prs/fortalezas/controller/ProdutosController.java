@@ -77,18 +77,36 @@ public class ProdutosController {
 
     @GetMapping("produtos/tipo")
     public ResponseEntity<?> listarProdutoPorTipo(@RequestParam String tipo,
-                                                               @RequestParam int page,
-                                                               @RequestParam int size) {
+                                                  @RequestParam int page,
+                                                  @RequestParam int size
+    ) {
         Pageable pageable = PageRequest.of(page, size);
+        TipoProduto tipoEnum = TipoProduto.valueOf(tipo.toUpperCase());
         try {
-            TipoProduto tipoEnum = TipoProduto.valueOf(tipo.toUpperCase());
             Page<Produtos> produtosPage = produtosRepository.findByTipo(tipoEnum, pageable);
             return ResponseEntity.ok(produtosPage);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body("Tipo de produto inválido");
         }
-
     }
+
+    @GetMapping("produtos/search")
+    public ResponseEntity<?> seacrh(
+                                    @RequestParam int page,
+                                    @RequestParam int size,
+                                    @RequestParam(required = false) String search
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        try {
+
+            Page<Produtos> produtosPage = produtosRepository.findByNomeContainingIgnoreCaseOrMarcaContainingIgnoreCase(search, search, pageable);
+            return ResponseEntity.ok(produtosPage);
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("busca inválida");
+        }
+    }
+
     @PutMapping("/produtos/{id}")
     @Transactional
     public ResponseEntity<?> editarProduto(@PathVariable Long id, @RequestBody EditarProdutosDTO produtoDTO) {
@@ -113,6 +131,7 @@ public class ProdutosController {
             @RequestParam(required = false) String prioridade
     ) {
         List<Produtos> resultados = produtosRepository.buscarPorFiltros(estilo, cor, local, prioridade);
+
         return ResponseEntity.ok(resultados);
     }
 
