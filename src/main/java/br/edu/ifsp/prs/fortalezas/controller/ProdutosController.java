@@ -11,13 +11,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -34,27 +37,52 @@ public class ProdutosController {
     public ResponseEntity<Map<String, String>> cadastrarProduto(
             @RequestPart("produto") CadastrarProdutosDTO produtoDTO,
             @RequestPart("imagem") MultipartFile imagem) {
+        String clientId = System.getenv("IMGUR_CLIENT_ID");
 
         try {
-            // Salva imagem
-            String nomeImagem = UUID.randomUUID() + "_" + imagem.getOriginalFilename();
-            String caminhoImagem = "src/main/resources/static/image/" + produtoDTO.tipoProduto() + "/" + nomeImagem;
-            Files.write(Paths.get(caminhoImagem), imagem.getBytes());
+            // Converte a imagem para Base64
+            String base64 = Base64.getEncoder().encodeToString(imagem.getBytes());
 
-            // Cria produto
-            Produtos produto = new Produtos(produtoDTO);
+            // Cria o corpo da requisição para o Imgur
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            headers.set("Authorization", "Client-ID " + clientId);
 
-            produto.setImagem("/image/" + produtoDTO.tipoProduto().toString().toLowerCase() + "/" + nomeImagem);
+            MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+            body.add("image", base64);
+            body.add("type", "base64");
+            body.add("name", produtoDTO.tipoProduto().toString().toLowerCase() + "_" + imagem.getOriginalFilename());
+            body.add("title", produtoDTO.tipoProduto().toString());
+            body.add("description", "Imagem do tipo: " + produtoDTO.tipoProduto().toString());
 
-            produtosRepository.save(produto);
+            HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
 
-            return ResponseEntity.ok(Map.of("mensagem", "Produto cadastrado com sucesso!"));
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<Map> response = restTemplate.postForEntity("https://api.imgur.com/3/image", request, Map.class);
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                Map<String, Object> data = (Map<String, Object>) response.getBody().get("data");
+                String link = (String) data.get("link");
+
+                Produtos produto = new Produtos(produtoDTO);
+                produto.setImagem(link); // Salva a URL da imagem
+                produtosRepository.save(produto);
+
+                return ResponseEntity.ok(Map.of("mensagem", "Produto cadastrado com sucesso!"));
+            } else {
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(Map.of("erro", "Erro ao fazer upload no Imgur."));
+            }
+
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("erro", "Erro ao cadastrar produto."));
         }
     }
+
 
     @GetMapping("produtos")
     public ResponseEntity listarProdutos() {
@@ -92,9 +120,9 @@ public class ProdutosController {
 
     @GetMapping("produtos/search")
     public ResponseEntity<?> seacrh(
-                                    @RequestParam int page,
-                                    @RequestParam int size,
-                                    @RequestParam(required = false) String search
+            @RequestParam int page,
+            @RequestParam int size,
+            @RequestParam(required = false) String search
     ) {
         Pageable pageable = PageRequest.of(page, size);
         try {
