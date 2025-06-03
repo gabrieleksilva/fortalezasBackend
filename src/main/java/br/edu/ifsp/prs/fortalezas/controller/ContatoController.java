@@ -22,18 +22,17 @@ public class ContatoController {
 
     @PostMapping("contato")
     @Transactional
-    public ResponseEntity<Map<String, String>>  cadastrarDuvida(@RequestBody CadastrarDuvidasDTO cadastrarDuvidasDTO) {
+    public ResponseEntity<Map<String, String>> cadastrarDuvida(@RequestBody CadastrarDuvidasDTO cadastrarDuvidasDTO) {
         try {
 
             Contato contato = new Contato(cadastrarDuvidasDTO);
             contatoRepository.save(contato);
 
             return ResponseEntity.ok(Map.of("mensagem", "Duvida cadastrada com sucesso!"));
-        } catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("erro", "Erro ao cadastrar duvida."));
         }
-    };
-
+    }
 }

@@ -18,12 +18,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -109,8 +106,9 @@ public class ProdutosController {
                                                   @RequestParam int size
     ) {
         Pageable pageable = PageRequest.of(page, size);
-        TipoProduto tipoEnum = TipoProduto.valueOf(tipo.toUpperCase());
+
         try {
+            TipoProduto tipoEnum = TipoProduto.valueOf(tipo.toUpperCase());
             Page<Produtos> produtosPage = produtosRepository.findByTipo(tipoEnum, pageable);
             return ResponseEntity.ok(produtosPage);
         } catch (IllegalArgumentException e) {
@@ -119,7 +117,7 @@ public class ProdutosController {
     }
 
     @GetMapping("produtos/search")
-    public ResponseEntity<?> seacrh(
+    public ResponseEntity<?> search(
             @RequestParam int page,
             @RequestParam int size,
             @RequestParam(required = false) String search
