@@ -30,7 +30,7 @@ public class SecurityConfigurations {
                         .requestMatchers("/loja/produtos/**").permitAll()
                         .requestMatchers("/loja/produtos/tipo**").permitAll()
                         .requestMatchers("/loja/produtos/search**").permitAll()
-                        .requestMatchers("/loja/contatopo**").permitAll()
+                        .requestMatchers("/loja/contato**").permitAll()
                         .requestMatchers("/image/pisos/**").permitAll()
                         .requestMatchers("/image/argamassas/**").permitAll()
                         .requestMatchers("/image/gabinetes/**").permitAll()
